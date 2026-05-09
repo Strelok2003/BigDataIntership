@@ -1,2 +1,4 @@
 logs
 dags/__pycache__
+.env
+simple_auth_manager_passwords.json.generated

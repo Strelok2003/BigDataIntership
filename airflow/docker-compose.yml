@@ -17,8 +17,8 @@ services:
               "path":"/opt/airflow/Data/raw"
           }
         }
-      - AIRFLOW_CONN_MONGO_CONN=mongo://airflow_user:airflow_pass@mongo:27017/my_database?authSource=admin
-    command: bash -c "mkdir -p /opt/airflow/Data/tmp /opt/airflow/Data/cleaned && airflow db migrate && airflow standalone"
+      - AIRFLOW_CONN_MONGO_CONN=mongo://${MONGO_AIRFLOW_USER}:${MONGO_AIRFLOW_PASS}@mongo:27017/my_database?authSource=admin
+    command: bash -c "airflow db migrate && airflow standalone"
   
   mongo:
     image: mongo:7
@@ -26,6 +26,6 @@ services:
     ports:
       - "27017:27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: airflow_user
-      MONGO_INITDB_ROOT_PASSWORD: airflow_pass
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_AIRFLOW_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_AIRFLOW_PASS}
       MONGO_INITDB_DATABASE: my_database

@@ -16,10 +16,23 @@ change into airflow folder
 
     cd airflow
 
-change airflow user and password if you want 
+set up airflow user and password
 
-    edit simple_auth_manager_passwords.json.generated file, default is admin as user and password, this is what you use when accessing airflow UI
+    create simple_auth_manager_passwords.json.generated file and populate it with following: 
 
+        {"airflow_ui_user": "airflow_ui_password"}
+
+    this user and password is what you will use when accessing airflow UI
+
+
+set up airflow user and password
+    
+    create .env file in airflow directory with following env variables
+
+    MONGO_AIRFLOW_USER=
+    MONGO_AIRFLOW_PASS=
+
+    thees variables are necessary for airflow mongo connection and also to access result after loading data to mongo
 
 spin up docker containers
 

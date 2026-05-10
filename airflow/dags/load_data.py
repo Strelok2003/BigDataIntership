@@ -9,9 +9,8 @@ from pendulum import DateTime, Timezone
 import os
 import pandas as pd
 
+from config.config_reader import FILE_NAME, COLLECTION_NAME, DATA_FOLDER
 
-DATA_FOLDER = f"{os.getenv("AIRFLOW_HOME")}/Data"
-FILE_NAME = "tiktok_google_play_reviews.csv"
 
 
 def load_csv_to_mongo(file_path:str, collection_name:str) -> None:
@@ -51,7 +50,7 @@ with DAG(
     load_cleaned_data = PythonOperator(
         task_id="load_cleaned_data",
         python_callable=load_csv_to_mongo,
-        op_args=[f"{DATA_FOLDER}/cleaned/{FILE_NAME}", "tiktok_google_play_reviews"]
+        op_args=[f"{DATA_FOLDER}/cleaned/{FILE_NAME}", COLLECTION_NAME]
     )
 
     load_cleaned_data

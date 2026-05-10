@@ -45,13 +45,10 @@ from pendulum import DateTime, Timezone
 import os
 import pandas as pd
 
-
-DATA_FOLDER = f"{os.getenv("AIRFLOW_HOME")}/Data"
-FILE_NAME = "tiktok_google_play_reviews.csv"
+from config.config_reader import FILE_NAME, DATA_FOLDER ,TMP_FOLDER, CLEANED_FOLDER, RAW_FILE
 
 
-
-def branch_task(file_path:str) -> None:
+def branch_task(file_path:str) -> str:
     """
     Check whether specified file is emptry or not.
 
@@ -89,7 +86,7 @@ def replace_null_values(file_path:str, **context) -> None:
 
     df = df.fillna("-")
 
-    destination_path = f"{DATA_FOLDER}/tmp/{FILE_NAME}"
+    destination_path = os.path.join(TMP_FOLDER, FILE_NAME)
 
     df.to_csv(destination_path, index=False)
 
@@ -154,7 +151,7 @@ def clean_content_column(**context) -> None:
 
     df["content"] = df["content"].str.replace(r"[^\w\s.,!?;:'\"()-]", "", regex=True)
 
-    cleaned_file_path = f"{DATA_FOLDER}/cleaned/{FILE_NAME}"
+    cleaned_file_path = os.path.join(CLEANED_FOLDER, FILE_NAME)
 
     df.to_csv(cleaned_file_path, index=False)
 
@@ -172,7 +169,7 @@ with DAG(
     wait_for_file = FileSensor(
         task_id="wait_for_file",
         fs_conn_id="fs_default",
-        filepath=f"{FILE_NAME}",
+        filepath=FILE_NAME,
         mode="poke",
         poke_interval=10,
         timeout=60 * 10
@@ -182,7 +179,7 @@ with DAG(
     file_empty_or_not = BranchPythonOperator(
         task_id="file_empty_or_not",
         python_callable=branch_task,
-        op_args=[f"{DATA_FOLDER}/raw/{FILE_NAME}"]
+        op_args=[RAW_FILE]
     )
 
 
@@ -200,7 +197,7 @@ with DAG(
         replace_nulls = PythonOperator(
             task_id="replace_nulls",
             python_callable=replace_null_values,
-            op_kwargs={"file_path": f"{DATA_FOLDER}/raw/{FILE_NAME}"}
+            op_kwargs={"file_path": RAW_FILE}
         )
 
 

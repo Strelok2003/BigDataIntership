@@ -16,17 +16,11 @@ change into numpy_pandas\Task2 folder
 
     cd numpy_pandas\Task2
 
-change SA password if you want
+set SA password 
 
-    edit docker-compose.yml file 
+    create .env file
 
-    environment:
-      SA_PASSWORD:
-    change to desired password, you should also change it in 
-
-    command: >
-
-    this will be the password you will use to connect sql server
+        SA_PASSWORD=
 
 
 spin up docker containers

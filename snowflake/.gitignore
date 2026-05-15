@@ -1,0 +1,4 @@
+dags/__pycache__
+dags/config/__pycache__
+.env
+simple_auth_manager_passwords.json.generated

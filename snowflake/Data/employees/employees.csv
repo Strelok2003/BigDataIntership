@@ -1,0 +1,6 @@
+employee_id,first_name,last_name,department,job_title,salary,hire_date
+E001,Alice,Walker,Sales,Sales Manager,75000,2021-06-15
+E002,Michael,Lee,IT,System Administrator,68000,2022-01-10
+E003,Olivia,Martin,HR,HR Specialist,62000,2023-03-12
+E004,Daniel,Clark,Finance,Financial Analyst,71000,2020-09-25
+E005,Emily,Davis,Support,Customer Support Rep,48000,2024-02-18

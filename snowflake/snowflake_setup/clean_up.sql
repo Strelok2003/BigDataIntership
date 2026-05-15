@@ -1,0 +1,37 @@
+-- =========================================
+-- Cleanup Script for Example Database Setup
+-- =========================================
+
+-- Use correct context
+USE DATABASE Example;
+USE SCHEMA example;
+
+-- Drop procedure first
+DROP PROCEDURE IF EXISTS load_folder_data(STRING, STRING, STRING);
+
+-- Drop tables
+DROP TABLE IF EXISTS ORDER_ITEMS;
+DROP TABLE IF EXISTS TRANSACTIONS;
+DROP TABLE IF EXISTS PRODUCTS;
+DROP TABLE IF EXISTS EMPLOYEES;
+DROP TABLE IF EXISTS CUSTOMERS;
+DROP TABLE IF EXISTS load_audit_log;
+
+--Drop streams
+DROP STREAM IF EXISTS ORDER_ITEMS_STREAM;
+DROP STREAM IF EXISTS TRANSACTIONS_STREAM;
+DROP STREAM IF EXISTS PRODUCTS_STREAM;
+DROP STREAM IF EXISTS EMPLOYEES_STREAM;
+DROP STREAM IF EXISTS CUSTOMERS_STREAM;
+
+-- Drop file format
+DROP FILE FORMAT IF EXISTS my_csv_format;
+
+-- Drop stage
+DROP STAGE IF EXISTS raw_files;
+
+-- Drop schema
+DROP SCHEMA IF EXISTS example;
+
+-- Drop database
+DROP DATABASE IF EXISTS Example;

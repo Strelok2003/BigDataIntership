@@ -1,0 +1,159 @@
+CREATE DATABASE IF NOT EXISTS Example;
+
+USE DATABASE Example;
+
+CREATE SCHEMA IF NOT EXISTS example;
+
+USE SCHEMA example;
+
+CREATE OR REPLACE STAGE raw_files
+COMMENT = 'Snowflake internal storage for raw files uploaded from local system'
+DIRECTORY = ( ENABLE = TRUE );
+
+
+CREATE OR REPLACE TABLE CUSTOMERS (
+    CUSTOMER_ID VARCHAR PRIMARY KEY,
+    FIRST_NAME VARCHAR,
+    LAST_NAME VARCHAR,
+    EMAIL VARCHAR,
+    PHONE VARCHAR,
+    CITY VARCHAR,
+    COUNTRY VARCHAR,
+    SIGNUP_DATE DATE
+);
+
+CREATE STREAM CUSTOMERS_stream
+ON TABLE CUSTOMERS;
+
+CREATE OR REPLACE TABLE EMPLOYEES (
+    EMPLOYEE_ID VARCHAR PRIMARY KEY,
+    FIRST_NAME VARCHAR,
+    LAST_NAME VARCHAR,
+    DEPARTMENT VARCHAR,
+    JOB_TITLE VARCHAR,
+    SALARY NUMBER,
+    HIRE_DATE DATE
+);
+
+CREATE STREAM EMPLOYEES_stream
+ON TABLE EMPLOYEES;
+
+
+CREATE OR REPLACE TABLE PRODUCTS (
+    PRODUCT_ID VARCHAR PRIMARY KEY,
+    PRODUCT_NAME VARCHAR,
+    CATEGORY VARCHAR,
+    PRICE NUMBER(38, 2),
+    STOCK_QUANTITY NUMBER
+);
+
+CREATE STREAM PRODUCTS_stream
+ON TABLE PRODUCTS;
+
+
+CREATE OR REPLACE TABLE TRANSACTIONS (
+    TRANSACTION_ID VARCHAR PRIMARY KEY,
+    CUSTOMER_ID VARCHAR,
+    TRANSACTION_DATE DATE,
+    TOTAL_AMOUNT NUMBER(38, 2),
+    PAYMENT_METHOD VARCHAR,
+    STATUS VARCHAR
+    -- FOREIGN KEY (CUSTOMER_ID) REFERENCES CUSTOMERS(CUSTOMER_ID)
+);
+
+CREATE STREAM TRANSACTIONS_stream
+ON TABLE TRANSACTIONS;
+
+
+
+
+CREATE OR REPLACE TABLE ORDER_ITEMS (
+    ORDER_ITEM_ID VARCHAR PRIMARY KEY,
+    TRANSACTION_ID VARCHAR,
+    PRODUCT_ID VARCHAR,
+    QUANTITY NUMBER,
+    UNIT_PRICE NUMBER(38, 2),
+    TOTAL_PRICE NUMBER(38, 2)
+    -- FOREIGN KEY (TRANSACTION_ID) REFERENCES TRANSACTIONS(TRANSACTION_ID),
+    -- FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCTS(PRODUCT_ID)
+);
+
+CREATE STREAM ORDER_ITEMS_stream
+ON TABLE ORDER_ITEMS;
+
+
+CREATE OR REPLACE FILE FORMAT my_csv_format
+  TYPE = 'CSV'
+  FIELD_DELIMITER = ','
+  SKIP_HEADER = 1
+  FIELD_OPTIONALLY_ENCLOSED_BY = '"'
+  NULL_IF = ('NULL', 'null', '')
+  EMPTY_FIELD_AS_NULL = TRUE
+  ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE;
+
+
+
+
+CREATE OR REPLACE TABLE load_audit_log (
+    table_name STRING,
+    stage_name STRING,
+    folder_name STRING,
+    operation STRING,
+    rows_loaded NUMBER,
+    load_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP()
+);
+
+
+CREATE OR REPLACE PROCEDURE load_folder_data(
+    table_name STRING,
+    stage_name STRING,
+    folder_name STRING
+)
+RETURNS STRING
+LANGUAGE SQL
+AS
+$$
+DECLARE
+    copy_statement STRING;
+    rows_loaded NUMBER DEFAULT 0;
+
+BEGIN
+
+    copy_statement :=
+          'COPY INTO ' || table_name
+       || ' FROM @' || stage_name || '/' || folder_name
+       || ' FILE_FORMAT = (FORMAT_NAME = ''my_csv_format'')';
+
+    EXECUTE IMMEDIATE :copy_statement;
+
+    BEGIN
+        SELECT "rows_loaded"
+        INTO :rows_loaded
+        FROM TABLE(RESULT_SCAN(LAST_QUERY_ID())) t;
+    EXCEPTION
+        WHEN OTHER THEN
+            rows_loaded := 0;
+    END;
+
+    -- Insert audit record
+    INSERT INTO load_audit_log (
+        table_name,
+        stage_name,
+        folder_name,
+        operation,
+        rows_loaded,
+        load_time
+    )
+    VALUES (
+        :table_name,
+        :stage_name,
+        :folder_name,
+        'COPY INTO',
+        :rows_loaded,
+        CURRENT_TIMESTAMP()
+    );
+
+    RETURN 'Rows loaded: ' || rows_loaded;
+
+END;
+$$;

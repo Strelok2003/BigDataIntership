@@ -1,0 +1,10 @@
+services:
+  postgres:
+    image: postgres:15-alpine # Official lightweight image
+    restart: always
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432" # Maps host port 5432 to container port 5432

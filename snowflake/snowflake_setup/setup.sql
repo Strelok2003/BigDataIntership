@@ -1,10 +1,10 @@
-CREATE DATABASE IF NOT EXISTS Example;
+CREATE DATABASE IF NOT EXISTS EXAMPLE;
 
-USE DATABASE Example;
+USE DATABASE EXAMPLE;
 
-CREATE SCHEMA IF NOT EXISTS example;
+CREATE SCHEMA IF NOT EXISTS EXAMPLE;
 
-USE SCHEMA example;
+USE SCHEMA EXAMPLE;
 
 CREATE OR REPLACE STAGE raw_files
 COMMENT = 'Snowflake internal storage for raw files uploaded from local system'
@@ -127,7 +127,7 @@ BEGIN
     EXECUTE IMMEDIATE :copy_statement;
 
     BEGIN
-        SELECT "rows_loaded"
+        SELECT SUM("rows_loaded")
         INTO :rows_loaded
         FROM TABLE(RESULT_SCAN(LAST_QUERY_ID())) t;
     EXCEPTION

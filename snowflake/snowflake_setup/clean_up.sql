@@ -3,8 +3,8 @@
 -- =========================================
 
 -- Use correct context
-USE DATABASE Example;
-USE SCHEMA example;
+USE DATABASE EXAMPLE;
+USE SCHEMA EXAMPLE;
 
 -- Drop procedure first
 DROP PROCEDURE IF EXISTS load_folder_data(STRING, STRING, STRING);
@@ -31,7 +31,7 @@ DROP FILE FORMAT IF EXISTS my_csv_format;
 DROP STAGE IF EXISTS raw_files;
 
 -- Drop schema
-DROP SCHEMA IF EXISTS example;
+DROP SCHEMA IF EXISTS EXAMPLE;
 
 -- Drop database
-DROP DATABASE IF EXISTS Example;
+DROP DATABASE IF EXISTS EXAMPLE;

@@ -40,6 +40,7 @@ Tasks:
 from airflow import DAG
 from airflow.decorators import task
 from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
+from airflow.sdk import TaskGroup
 from pendulum import DateTime, Timezone
 import os
 
@@ -132,35 +133,41 @@ with DAG(
     catchup=False
 ):
     
-    folder_names = get_folder_names(DATA_FOLDER)
+    with TaskGroup(
+        group_id="raw_stage"
+    ):
 
-    upload_scripts = generate_upload_script.partial(
-            folder_path=DATA_FOLDER,
+        folder_names = get_folder_names(DATA_FOLDER)
+
+        upload_scripts = generate_upload_script.partial(
+                folder_path=DATA_FOLDER,
+                snowflake_stage=RAW_STAGE
+        ).expand(folder_name=folder_names)
+
+
+        upload_files = SQLExecuteQueryOperator(
+            task_id="upload_files",
+            conn_id="snowflake_conn",
+            sql=upload_scripts
+        )
+
+
+        call_commands = generate_call_command.partial(
             snowflake_stage=RAW_STAGE
-    ).expand(folder_name=folder_names)
+        ).expand(folder_name=folder_names)
 
 
-    upload_files = SQLExecuteQueryOperator(
-        task_id="upload_files",
-        conn_id="snowflake_conn",
-        sql=upload_scripts
-    )
+        copy_data = SQLExecuteQueryOperator(
+            task_id="copy_data",
+            conn_id="snowflake_conn",
+            sql=call_commands,
+            autocommit=True
+        )
 
 
-    call_commands = generate_call_command.partial(
-        snowflake_stage=RAW_STAGE
-    ).expand(folder_name=folder_names)
+        folder_names >> upload_scripts >> upload_files
+        folder_names >> call_commands
 
+        [upload_files, call_commands] >> copy_data
 
-    copy_data = SQLExecuteQueryOperator(
-        task_id="copy_data",
-        conn_id="snowflake_conn",
-        sql=call_commands,
-        autocommit=True
-    )
-
-
-    folder_names >> upload_scripts >> upload_files
-    folder_names >> call_commands
-
-    [upload_files, call_commands] >> copy_data
+    

@@ -134,7 +134,7 @@ with DAG(
     
     with TaskGroup(
         group_id="raw_stage"
-    ):
+    ) as raw_stage:
 
         folder_names = get_folder_names(DATA_FOLDER)
 
@@ -166,5 +166,50 @@ with DAG(
         folder_names >> call_commands
 
         [upload_files, call_commands] >> copy_data
+
+    with TaskGroup(
+        group_id="cleaned_stage"
+    ) as cleaned_stage:
+        
+        load_dim_stores = SQLExecuteQueryOperator(
+            task_id='load_dim_stores',
+            conn_id="snowflake_conn",
+            sql='CALL load_dim_stores()',
+            autocommit=True
+        )
+
+
+        load_dim_customers = SQLExecuteQueryOperator(
+            task_id='load_dim_customers',
+            conn_id="snowflake_conn",
+            sql='CALL load_dim_customers()',
+            autocommit=True
+        )
+
+        load_dim_employees = SQLExecuteQueryOperator(
+            task_id='load_dim_employees',
+            conn_id="snowflake_conn",
+            sql='CALL load_dim_employees()',
+            autocommit=True
+        )
+
+        load_dim_products = SQLExecuteQueryOperator(
+            task_id='load_dim_products',
+            conn_id="snowflake_conn",
+            sql='CALL load_dim_products()',
+            autocommit=True
+        )
+
+        load_fact_transactions = SQLExecuteQueryOperator(
+            task_id='load_fact_transactions',
+            conn_id="snowflake_conn",
+            sql='CALL load_fact_transactions()',
+            autocommit=True
+        )
+
+        [load_dim_stores, load_dim_customers, load_dim_employees, load_dim_products, load_fact_transactions]
+
+    raw_stage >> cleaned_stage
+    
 
     

@@ -38,9 +38,8 @@ Tasks:
 """
 
 from airflow import DAG
-from airflow.decorators import task
 from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
-from airflow.sdk import TaskGroup
+from airflow.sdk import TaskGroup, task
 from pendulum import DateTime, Timezone
 import os
 
@@ -145,11 +144,10 @@ with DAG(
         ).expand(folder_name=folder_names)
 
 
-        upload_files = SQLExecuteQueryOperator(
+        upload_files = SQLExecuteQueryOperator.partial(
             task_id="upload_files",
-            conn_id="snowflake_conn",
-            sql=upload_scripts
-        )
+            conn_id="snowflake_conn"
+        ).expand(sql=upload_scripts)
 
 
         call_commands = generate_call_command.partial(
@@ -157,12 +155,11 @@ with DAG(
         ).expand(folder_name=folder_names)
 
 
-        copy_data = SQLExecuteQueryOperator(
+        copy_data = SQLExecuteQueryOperator.partial(
             task_id="copy_data",
             conn_id="snowflake_conn",
-            sql=call_commands,
             autocommit=True
-        )
+        ).expand(sql=call_commands)
 
 
         folder_names >> upload_scripts >> upload_files

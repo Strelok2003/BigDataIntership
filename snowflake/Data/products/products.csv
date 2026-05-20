@@ -1,6 +1,6 @@
 product_id,product_name,category,price,stock_quantity
-P001,Wireless Mouse,Electronics,25.99,120
-P002,Mechanical Keyboard,Electronics,89.50,75
-P003,Office Chair,Furniture,199.99,40
-P004,Water Bottle,Accessories,15.00,200
-P005,Laptop Stand,Accessories,45.75,95
+P301,Wireless Mouse,Electronics,29.99,150
+P302,Mechanical Keyboard,Electronics,89.99,80
+P303,Ergonomic Office Chair,Furniture,199.99,25
+P304,Water Bottle 32oz,Sports,15.50,300
+P305,Running Shoes,Apparel,75.00,120

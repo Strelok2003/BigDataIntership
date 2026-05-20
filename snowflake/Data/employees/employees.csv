@@ -1,6 +1,6 @@
-employee_id,first_name,last_name,department,job_title,salary,hire_date
-E001,Alice,Walker,Sales,Sales Manager,75000,2021-06-15
-E002,Michael,Lee,IT,System Administrator,68000,2022-01-10
-E003,Olivia,Martin,HR,HR Specialist,62000,2023-03-12
-E004,Daniel,Clark,Finance,Financial Analyst,71000,2020-09-25
-E005,Emily,Davis,Support,Customer Support Rep,48000,2024-02-18
+employee_id,first_name,last_name,role,hire_date,store_id,salary
+E201,David,Lee,Store Manager,2021-04-10,S01,65000
+E202,Maria,Garcia,Sales Associate,2023-06-15,S01,38000
+E203,James,Wilson,Shift Supervisor,2022-11-01,S02,48000
+E204,Aria,Patel,Sales Associate,2024-01-20,S02,36000
+E205,Elena,Russo,Inventory Specialist,2023-09-12,S01,42000

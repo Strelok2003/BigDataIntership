@@ -1,6 +1,0 @@
-order_item_id,transaction_id,product_id,quantity,unit_price,total_price
-OI001,T001,P001,1,25.99,25.99
-OI002,T001,P002,1,89.50,89.50
-OI003,T002,P005,1,45.75,45.75
-OI004,T003,P003,1,199.99,199.99
-OI005,T004,P001,1,25.99,25.99

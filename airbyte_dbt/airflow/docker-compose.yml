@@ -1,0 +1,17 @@
+services:
+  airflow:
+    build: .
+    container_name: airflow
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./simple_auth_manager_passwords.json.generated:/opt/airflow/simple_auth_manager_passwords.json.generated
+      - ~/.dbt:/home/airflow/.dbt
+      - ../pagila_analytics:/opt/dbt/pagila_analytics
+    environment:
+      - AIRBYTE_POSTGRES_TO_SNOWFLAKE_CONN_ID=${AIRBYTE_POSTGRES_TO_SNOWFLAKE_CONN_ID}
+      - AIRFLOW_HOME=/opt/airflow
+      - AIRFLOW__CORE__TEST_CONNECTION=Enabled
+      - AIRFLOW_CONN_AIRBYTE_DEFAULT=airbyte://http://${AIRBYTE_CLIENT_ID}:${AIRBYTE_CLIENT_SECRET}@host.docker.internal%3A8000%2Fapi%2Fpublic%2Fv1%2F
+    command: bash -c "airflow db migrate && airflow standalone"

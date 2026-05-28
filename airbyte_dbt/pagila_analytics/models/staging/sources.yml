@@ -1,0 +1,363 @@
+version: 1
+
+sources:
+  - name: pagila
+    database: airbyte_database
+    schema: airbyte_schema
+    tables:
+      - name: actor
+        columns:
+          - name: _airbyte_raw_id
+            data_type: varchar
+          - name: _airbyte_extracted_at
+            data_type: timestamp_tz
+          - name: _airbyte_meta
+            data_type: variant
+          - name: _airbyte_generation_id
+            data_type: number
+          - name: actor_id
+            data_type: number
+          - name: last_name
+            data_type: varchar
+          - name: first_name
+            data_type: varchar
+          - name: last_update
+            data_type: timestamp_tz
+        config:
+          freshness:
+            warn_after:
+              count: 24
+              period: hour
+            error_after:
+              count: 100000
+              period: day
+          loaded_at_field: last_update
+
+      - name: address
+        columns:
+          - name: _airbyte_raw_id
+            data_type: varchar
+          - name: _airbyte_extracted_at
+            data_type: timestamp_tz
+          - name: _airbyte_meta
+            data_type: variant
+          - name: _airbyte_generation_id
+            data_type: number
+          - name: phone
+            data_type: varchar
+          - name: address
+            data_type: varchar
+          - name: city_id
+            data_type: number
+          - name: address2
+            data_type: varchar
+          - name: district
+            data_type: varchar
+          - name: address_id
+            data_type: number
+          - name: last_update
+            data_type: timestamp_tz
+          - name: postal_code
+            data_type: varchar
+        config:
+          freshness:
+            warn_after:
+              count: 24
+              period: hour
+            error_after:
+              count: 100000
+              period: day
+          loaded_at_field: last_update
+
+      - name: category
+        columns:
+          - name: _airbyte_raw_id
+            data_type: varchar
+          - name: _airbyte_extracted_at
+            data_type: timestamp_tz
+          - name: _airbyte_meta
+            data_type: variant
+          - name: _airbyte_generation_id
+            data_type: number
+          - name: name
+            data_type: varchar
+          - name: category_id
+            data_type: number
+          - name: last_update
+            data_type: timestamp_tz
+
+      - name: city
+        columns:
+          - name: _airbyte_raw_id
+            data_type: varchar
+          - name: _airbyte_extracted_at
+            data_type: timestamp_tz
+          - name: _airbyte_meta
+            data_type: variant
+          - name: _airbyte_generation_id
+            data_type: number
+          - name: city
+            data_type: varchar
+          - name: city_id
+            data_type: number
+          - name: country_id
+            data_type: number
+          - name: last_update
+            data_type: timestamp_tz
+
+      - name: country
+        columns:
+          - name: _airbyte_raw_id
+            data_type: varchar
+          - name: _airbyte_extracted_at
+            data_type: timestamp_tz
+          - name: _airbyte_meta
+            data_type: variant
+          - name: _airbyte_generation_id
+            data_type: number
+          - name: country
+            data_type: varchar
+          - name: country_id
+            data_type: number
+          - name: last_update
+            data_type: timestamp_tz
+
+      - name: customer
+        columns:
+          - name: _airbyte_raw_id
+            data_type: varchar
+          - name: _airbyte_extracted_at
+            data_type: timestamp_tz
+          - name: _airbyte_meta
+            data_type: variant
+          - name: _airbyte_generation_id
+            data_type: number
+          - name: email
+            data_type: varchar
+          - name: active
+            data_type: number
+          - name: store_id
+            data_type: number
+          - name: last_name
+            data_type: varchar
+          - name: activebool
+            data_type: boolean
+          - name: address_id
+            data_type: number
+          - name: first_name
+            data_type: varchar
+          - name: create_date
+            data_type: date
+          - name: customer_id
+            data_type: number
+          - name: last_update
+            data_type: timestamp_tz
+
+      - name: film
+        columns:
+          - name: _airbyte_raw_id
+            data_type: varchar
+          - name: _airbyte_extracted_at
+            data_type: timestamp_tz
+          - name: _airbyte_meta
+            data_type: variant
+          - name: _airbyte_generation_id
+            data_type: number
+          - name: title
+            data_type: varchar
+          - name: length
+            data_type: number
+          - name: rating
+            data_type: varchar
+          - name: film_id
+            data_type: number
+          - name: fulltext
+            data_type: varchar
+          - name: description
+            data_type: varchar
+          - name: language_id
+            data_type: number
+          - name: last_update
+            data_type: timestamp_tz
+          - name: rental_rate
+            data_type: float
+          - name: release_year
+            data_type: varchar
+          - name: rental_duration
+            data_type: number
+          - name: replacement_cost
+            data_type: float
+          - name: special_features
+            data_type: array
+          - name: original_language_id
+            data_type: number
+
+      - name: film_actor
+        columns:
+          - name: _airbyte_raw_id
+            data_type: varchar
+          - name: _airbyte_extracted_at
+            data_type: timestamp_tz
+          - name: _airbyte_meta
+            data_type: variant
+          - name: _airbyte_generation_id
+            data_type: number
+          - name: film_id
+            data_type: number
+          - name: actor_id
+            data_type: number
+          - name: last_update
+            data_type: timestamp_tz
+
+      - name: film_category
+        columns:
+          - name: _airbyte_raw_id
+            data_type: varchar
+          - name: _airbyte_extracted_at
+            data_type: timestamp_tz
+          - name: _airbyte_meta
+            data_type: variant
+          - name: _airbyte_generation_id
+            data_type: number
+          - name: film_id
+            data_type: number
+          - name: category_id
+            data_type: number
+          - name: last_update
+            data_type: timestamp_tz
+
+      - name: inventory
+        columns:
+          - name: _airbyte_raw_id
+            data_type: varchar
+          - name: _airbyte_extracted_at
+            data_type: timestamp_tz
+          - name: _airbyte_meta
+            data_type: variant
+          - name: _airbyte_generation_id
+            data_type: number
+          - name: film_id
+            data_type: number
+          - name: store_id
+            data_type: number
+          - name: last_update
+            data_type: timestamp_tz
+          - name: inventory_id
+            data_type: number
+
+      - name: language
+        columns:
+          - name: _airbyte_raw_id
+            data_type: varchar
+          - name: _airbyte_extracted_at
+            data_type: timestamp_tz
+          - name: _airbyte_meta
+            data_type: variant
+          - name: _airbyte_generation_id
+            data_type: number
+          - name: name
+            data_type: varchar
+          - name: language_id
+            data_type: number
+          - name: last_update
+            data_type: timestamp_tz
+
+      - name: payment
+        columns:
+          - name: _airbyte_raw_id
+            data_type: varchar
+          - name: _airbyte_extracted_at
+            data_type: timestamp_tz
+          - name: _airbyte_meta
+            data_type: variant
+          - name: _airbyte_generation_id
+            data_type: number
+          - name: amount
+            data_type: float
+          - name: staff_id
+            data_type: number
+          - name: rental_id
+            data_type: number
+          - name: payment_id
+            data_type: number
+          - name: customer_id
+            data_type: number
+          - name: payment_date
+            data_type: timestamp_tz
+
+      - name: rental
+        columns:
+          - name: _airbyte_raw_id
+            data_type: varchar
+          - name: _airbyte_extracted_at
+            data_type: timestamp_tz
+          - name: _airbyte_meta
+            data_type: variant
+          - name: _airbyte_generation_id
+            data_type: number
+          - name: staff_id
+            data_type: number
+          - name: rental_id
+            data_type: number
+          - name: customer_id
+            data_type: number
+          - name: last_update
+            data_type: timestamp_tz
+          - name: rental_date
+            data_type: timestamp_tz
+          - name: return_date
+            data_type: timestamp_tz
+          - name: inventory_id
+            data_type: number
+
+      - name: staff
+        columns:
+          - name: _airbyte_raw_id
+            data_type: varchar
+          - name: _airbyte_extracted_at
+            data_type: timestamp_tz
+          - name: _airbyte_meta
+            data_type: variant
+          - name: _airbyte_generation_id
+            data_type: number
+          - name: email
+            data_type: varchar
+          - name: active
+            data_type: boolean
+          - name: picture
+            data_type: varchar
+          - name: password
+            data_type: varchar
+          - name: staff_id
+            data_type: number
+          - name: store_id
+            data_type: number
+          - name: username
+            data_type: varchar
+          - name: last_name
+            data_type: varchar
+          - name: address_id
+            data_type: number
+          - name: first_name
+            data_type: varchar
+          - name: last_update
+            data_type: timestamp_tz
+
+      - name: store
+        columns:
+          - name: _airbyte_raw_id
+            data_type: varchar
+          - name: _airbyte_extracted_at
+            data_type: timestamp_tz
+          - name: _airbyte_meta
+            data_type: variant
+          - name: _airbyte_generation_id
+            data_type: number
+          - name: store_id
+            data_type: number
+          - name: address_id
+            data_type: number
+          - name: last_update
+            data_type: timestamp_tz
+          - name: manager_staff_id
+            data_type: number

@@ -1,0 +1,406 @@
+models:
+  - name: stg__actor
+    description: ""
+    columns:
+      - name: actor_id
+        data_type: number
+        description: ""
+        data_tests:
+          - not_null
+          - unique
+
+      - name: last_name
+        data_type: varchar
+        description: ""
+
+      - name: first_name
+        data_type: varchar
+        description: ""
+
+      - name: updated_at
+        data_type: timestamp_tz
+        description: ""
+
+  - name: stg__address
+    description: ""
+    columns:
+      - name: phone
+        data_type: varchar
+        description: ""
+
+      - name: address
+        data_type: varchar
+        description: ""
+
+      - name: city_id
+        data_type: number
+        description: ""
+
+      - name: address2
+        data_type: varchar
+        description: ""
+        data_tests:
+          - not_null
+
+      - name: district
+        data_type: varchar
+        description: ""
+
+      - name: address_id
+        data_type: number
+        description: ""
+
+      - name: updated_at
+        data_type: timestamp_tz
+        description: ""
+
+      - name: postal_code
+        data_type: number
+        description: ""
+
+  - name: stg__category
+    description: ""
+    columns:
+      - name: name
+        data_type: varchar
+        description: ""
+
+      - name: category_id
+        data_type: number
+        description: ""
+
+      - name: updated_at
+        data_type: timestamp_tz
+        description: ""
+
+  - name: stg__city
+    description: ""
+    columns:
+      - name: city
+        data_type: varchar
+        description: ""
+
+      - name: city_id
+        data_type: number
+        description: ""
+
+      - name: country_id
+        data_type: number
+        description: ""
+
+      - name: updated_at
+        data_type: timestamp_tz
+        description: ""
+
+  - name: stg__country
+    description: ""
+    columns:
+      - name: country
+        data_type: varchar
+        description: ""
+
+      - name: country_id
+        data_type: number
+        description: ""
+
+      - name: updated_at
+        data_type: timestamp_tz
+        description: ""
+
+  - name: stg__customer
+    description: ""
+    columns:
+      - name: email
+        data_type: varchar
+        description: ""
+
+      - name: store_id
+        data_type: number
+        description: ""
+
+      - name: last_name
+        data_type: varchar
+        description: ""
+
+      - name: is_active
+        data_type: boolean
+        description: ""
+
+      - name: address_id
+        data_type: number
+        description: ""
+
+      - name: first_name
+        data_type: varchar
+        description: ""
+
+      - name: created_at
+        data_type: date
+        description: ""
+
+      - name: customer_id
+        data_type: number
+        description: ""
+
+      - name: updated_at
+        data_type: timestamp_tz
+        description: ""
+
+  - name: stg__film_actor
+    description: ""
+    columns:
+      - name: film_id
+        data_type: number
+        description: ""
+
+      - name: actor_id
+        data_type: number
+        description: ""
+
+      - name: updated_at
+        data_type: timestamp_tz
+        description: ""
+
+  - name: stg__film_category
+    description: ""
+    columns:
+      - name: film_id
+        data_type: number
+        description: ""
+
+      - name: category_id
+        data_type: number
+        description: ""
+
+      - name: updated_at
+        data_type: timestamp_tz
+        description: ""
+
+  - name: stg__film
+    description: ""
+    columns:
+      - name: title
+        data_type: varchar
+        description: ""
+
+      - name: length
+        data_type: number
+        description: ""
+
+      - name: rating
+        data_type: varchar
+        description: ""
+
+      - name: film_id
+        data_type: number
+        description: ""
+
+      - name: fulltext
+        data_type: varchar
+        description: ""
+
+      - name: description
+        data_type: varchar
+        description: ""
+
+      - name: language_id
+        data_type: number
+        description: ""
+
+      - name: updated_at
+        data_type: timestamp_tz
+        description: ""
+
+      - name: rental_rate
+        data_type: float
+        description: ""
+
+      - name: release_year
+        data_type: varchar
+        description: ""
+
+      - name: rental_duration
+        data_type: number
+        description: ""
+
+      - name: replacement_cost
+        data_type: float
+        description: ""
+
+      - name: special_features
+        data_type: array
+        description: ""
+
+      - name: original_language_id
+        data_type: number
+        description: ""
+
+  - name: stg__inventory
+    description: ""
+    columns:
+      - name: film_id
+        data_type: number
+        description: ""
+
+      - name: store_id
+        data_type: number
+        description: ""
+
+      - name: updated_at
+        data_type: timestamp_tz
+        description: ""
+
+      - name: inventory_id
+        data_type: number
+        description: ""
+
+  - name: stg__language
+    description: ""
+    columns:
+      - name: name
+        data_type: varchar
+        description: ""
+
+      - name: language_id
+        data_type: number
+        description: ""
+
+      - name: updated_at
+        data_type: timestamp_tz
+        description: ""
+
+  - name: stg__payment
+    description: ""
+    columns:
+      - name: amount
+        data_type: float
+        description: ""
+
+      - name: staff_id
+        data_type: number
+        description: ""
+
+      - name: rental_id
+        data_type: number
+        description: ""
+
+      - name: payment_id
+        data_type: number
+        description: ""
+
+      - name: customer_id
+        data_type: number
+        description: ""
+
+      - name: payment_datetime
+        data_type: timestamp_tz
+        description: ""
+
+      - name: payment_date
+        data_type: date
+        description: ""
+
+  - name: stg__rental
+    description: ""
+    columns:
+      - name: staff_id
+        data_type: number
+        description: ""
+
+      - name: rental_id
+        data_type: number
+        description: ""
+
+      - name: customer_id
+        data_type: number
+        description: ""
+
+      - name: updated_at
+        data_type: timestamp_tz
+        description: ""
+
+      - name: rental_datetime
+        data_type: timestamp_tz
+        description: ""
+
+      - name: rental_date
+        data_type: date
+        description: ""
+
+      - name: return_datetime
+        data_type: timestamp_tz
+        description: ""
+
+      - name: return_date
+        data_type: date
+        description: ""
+
+      - name: inventory_id
+        data_type: number
+        description: ""
+
+  - name: stg__staff
+    description: ""
+    columns:
+      - name: email
+        data_type: varchar
+        description: ""
+
+      - name: is_active
+        data_type: boolean
+        description: ""
+
+      - name: picture
+        data_type: varchar
+        description: ""
+
+      - name: password
+        data_type: varchar
+        description: ""
+
+      - name: staff_id
+        data_type: number
+        description: ""
+
+      - name: store_id
+        data_type: number
+        description: ""
+
+      - name: username
+        data_type: varchar
+        description: ""
+
+      - name: last_name
+        data_type: varchar
+        description: ""
+
+      - name: address_id
+        data_type: number
+        description: ""
+
+      - name: first_name
+        data_type: varchar
+        description: ""
+
+      - name: updated_at
+        data_type: timestamp_tz
+        description: ""
+
+  - name: stg__store
+    description: ""
+    columns:
+      - name: store_id
+        data_type: number
+        description: ""
+
+      - name: address_id
+        data_type: number
+        description: ""
+
+      - name: updated_at
+        data_type: timestamp_tz
+        description: ""
+
+      - name: manager_staff_id
+        data_type: number
+        description: ""

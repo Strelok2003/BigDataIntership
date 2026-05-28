@@ -1,0 +1,26 @@
+with source as (
+
+    select * from {{ source('pagila', 'rental') }}
+
+),
+
+renamed as (
+
+    select
+        staff_id,
+        rental_id,
+        customer_id,
+        last_update AS updated_at,
+
+        rental_date AS rental_datetime,
+        rental_date::date AS rental_date,
+
+        return_date AS return_datetime,
+        return_date::date AS return_date,
+        inventory_id
+
+    from source
+
+)
+
+select * from renamed

@@ -1,0 +1,15 @@
+services:
+  airflow:
+    build: .
+    container_name: airflow
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./simple_auth_manager_passwords.json.generated:/opt/airflow/simple_auth_manager_passwords.json.generated
+      - ./Data:/opt/airflow/Data
+    environment:
+      - AIRFLOW_HOME=/opt/airflow
+      # - AIRFLOW__CORE__TEST_CONNECTION=Enabled
+      - AIRFLOW_CONN_SNOWFLAKE_CONN=snowflake://${SNOWFLAKE_USER}:${SNOWFLAKE_PASS}@/example?account=${SNOWFLAKE_ACCOUNT}&database=example&warehouse=COMPUTE_WH
+    command: bash -c "airflow db migrate && airflow standalone"

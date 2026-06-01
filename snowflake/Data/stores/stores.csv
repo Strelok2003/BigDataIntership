@@ -1,0 +1,4 @@
+store_id,store_name,city,state,postal_code,manager_id
+S01,Downtown Hub,Chicago,IL,60601,E201
+S02,Westside Outlet,Austin,TX,78701,E203
+S03,Metro Plaza,New York,NY,10001,E501

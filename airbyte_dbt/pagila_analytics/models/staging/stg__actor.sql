@@ -10,7 +10,7 @@ renamed as (
         actor_id,
         last_name,
         first_name,
-        last_update as updated_at
+        CONVERT_TIMEZONE('UTC', last_update) as updated_at
 
     from source
 

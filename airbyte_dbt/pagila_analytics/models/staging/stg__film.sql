@@ -14,7 +14,7 @@ renamed as (
         fulltext,
         description,
         language_id,
-        last_update AS updated_at,
+        CONVERT_TIMEZONE('UTC', last_update) AS updated_at,
         rental_rate,
         release_year,
         rental_duration,

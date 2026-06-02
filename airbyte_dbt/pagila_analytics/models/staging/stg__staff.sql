@@ -17,7 +17,7 @@ renamed as (
         last_name,
         address_id,
         first_name,
-        last_update AS updated_at
+        CONVERT_TIMEZONE('UTC', last_update) AS updated_at
 
     from source
 

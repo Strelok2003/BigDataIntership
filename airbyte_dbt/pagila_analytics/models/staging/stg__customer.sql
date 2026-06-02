@@ -13,9 +13,9 @@ renamed as (
         activebool AS is_active,
         address_id,
         first_name,
-        create_date AS created_at,
+        CONVERT_TIMEZONE('UTC', create_date) AS created_at,
         customer_id,
-        last_update AS updated_at
+        CONVERT_TIMEZONE('UTC', last_update) AS updated_at
 
     from source
 

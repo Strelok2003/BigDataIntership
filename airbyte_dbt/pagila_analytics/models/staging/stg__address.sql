@@ -13,7 +13,7 @@ renamed as (
         address2,
         district,
         address_id,
-        last_update AS updated_at,
+        CONVERT_TIMEZONE('UTC', last_update) AS updated_at,
         postal_code:: integer AS postal_code
 
     from source

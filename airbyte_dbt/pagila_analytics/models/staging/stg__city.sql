@@ -10,7 +10,7 @@ renamed as (
         city,
         city_id,
         country_id,
-        last_update AS updated_at
+        CONVERT_TIMEZONE('UTC', last_update) AS updated_at
 
     from source
 

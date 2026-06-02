@@ -12,7 +12,7 @@ renamed as (
         rental_id,
         payment_id,
         customer_id,
-        payment_date AS payment_datetime,
+        CONVERT_TIMEZONE('UTC', payment_date) AS payment_datetime,
         payment_date::date as payment_date
 
     from source

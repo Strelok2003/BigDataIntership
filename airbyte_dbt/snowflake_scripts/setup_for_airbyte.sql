@@ -43,6 +43,12 @@ on warehouse identifier($airbyte_warehouse)
 to role identifier($airbyte_role);
 
 -- grant Airbyte database access
+
+-- official airbyte documentation for user permissions recomend that
+-- we give airbyte user ownership on database
+
+-- "our connection user must have OWNERSHIP privileges on those schemas.
+-- This allows us to manage tables and other objects required for the integration to function properly."
 grant OWNERSHIP
 on database identifier($airbyte_database)
 to role identifier($airbyte_role);

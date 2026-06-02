@@ -274,6 +274,10 @@ sources:
             data_type: number
           - name: amount
             data_type: float
+            #this is airbyte's internal data type mapping
+            #can not change it
+            #Postgres (numberic) -> airbyte (number)
+            #airbyte (number) -> snowflake (float) 
           - name: staff_id
             data_type: number
           - name: rental_id

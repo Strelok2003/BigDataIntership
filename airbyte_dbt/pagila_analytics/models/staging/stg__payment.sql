@@ -7,7 +7,7 @@ with source as (
 renamed as (
 
     select
-        amount,
+        amount:: number(5,2) as amount,
         staff_id,
         rental_id,
         payment_id,

@@ -1,43 +1,39 @@
+from cosmos import DbtTaskGroup, ProjectConfig, ProfileConfig
 from airflow import DAG
 from datetime import datetime
+
 from airflow.providers.airbyte.operators.airbyte import AirbyteTriggerSyncOperator
-from airflow.providers.standard.operators.bash import BashOperator
+
+from config.config_reader import DBT_PROJECT_DIR, PROFILES_YML_FILEPATH
 
 import os
 
 AIRBYTE_POSTGRES_TO_SNOWFLAKE_CONN_ID = os.getenv("AIRBYTE_POSTGRES_TO_SNOWFLAKE_CONN_ID")
 
-DBT_PROJECT_DIR = '/opt/dbt/pagila_analytics'
 
 with DAG(
     dag_id="snowflake_pipeline",
-    start_date=datetime(2024, 1, 1),
-    schedule=None,
+    start_date=datetime(2025, 1, 1),
+    schedule="@daily",
     catchup=False,
 ) as dag:
-
+    
     trigger_sync = AirbyteTriggerSyncOperator(
         task_id="trigger_airbyte_sync",
         airbyte_conn_id="airbyte_default",
         connection_id=AIRBYTE_POSTGRES_TO_SNOWFLAKE_CONN_ID,
     )
 
-    dbt_debug = BashOperator(
-        task_id='dbt_debug',
-        cwd=DBT_PROJECT_DIR,
-        bash_command='dbt debug'
+    dbt_tasks = DbtTaskGroup(
+        group_id="dbt_pagila_models",
+        project_config=ProjectConfig(
+            dbt_project_path=DBT_PROJECT_DIR
+        ),
+        profile_config=ProfileConfig(
+            profile_name="pagila_analytics",
+            target_name="dev",
+            profiles_yml_filepath=PROFILES_YML_FILEPATH,
+        ),
     )
 
-    dbt_run = BashOperator(
-        task_id='dbt_run',
-        cwd=DBT_PROJECT_DIR,
-        bash_command='dbt run --select staging'
-    )
-
-    dbt_test = BashOperator(
-        task_id='dbt_test',
-        cwd=DBT_PROJECT_DIR,
-        bash_command='dbt test'
-    )
-
-    trigger_sync >> dbt_debug >> dbt_run >> dbt_test
+    trigger_sync >> dbt_tasks

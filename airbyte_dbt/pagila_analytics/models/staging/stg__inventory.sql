@@ -10,7 +10,8 @@ renamed as (
         film_id,
         store_id,
         CONVERT_TIMEZONE('UTC', last_update) AS updated_at,
-        inventory_id
+        inventory_id,
+        CONVERT_TIMEZONE('UTC', _airbyte_extracted_at) as _airbyte_extracted_at
 
     from source
 

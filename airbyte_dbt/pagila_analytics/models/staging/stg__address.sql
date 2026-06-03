@@ -14,7 +14,8 @@ renamed as (
         district,
         address_id,
         CONVERT_TIMEZONE('UTC', last_update) AS updated_at,
-        postal_code:: integer AS postal_code
+        postal_code:: integer AS postal_code,
+        CONVERT_TIMEZONE('UTC', _airbyte_extracted_at) as _airbyte_extracted_at
 
     from source
 

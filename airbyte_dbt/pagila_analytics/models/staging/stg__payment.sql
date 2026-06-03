@@ -13,7 +13,8 @@ renamed as (
         payment_id,
         customer_id,
         CONVERT_TIMEZONE('UTC', payment_date) AS payment_datetime,
-        payment_date::date as payment_date
+        payment_date::date as payment_date,
+        CONVERT_TIMEZONE('UTC', _airbyte_extracted_at) as _airbyte_extracted_at
 
     from source
 

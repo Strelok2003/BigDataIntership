@@ -10,7 +10,8 @@ renamed as (
         store_id,
         address_id,
         CONVERT_TIMEZONE('UTC', last_update) AS updated_at,
-        manager_staff_id
+        manager_staff_id,
+        CONVERT_TIMEZONE('UTC', _airbyte_extracted_at) as _airbyte_extracted_at
 
     from source
 

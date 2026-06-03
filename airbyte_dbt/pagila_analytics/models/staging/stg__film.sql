@@ -20,7 +20,8 @@ renamed as (
         rental_duration,
         replacement_cost,
         special_features,
-        original_language_id
+        original_language_id,
+        CONVERT_TIMEZONE('UTC', _airbyte_extracted_at) as _airbyte_extracted_at
 
     from source
 

@@ -17,7 +17,8 @@ renamed as (
 
         CONVERT_TIMEZONE('UTC', return_date) AS return_datetime,
         return_date::date AS return_date,
-        inventory_id
+        inventory_id,
+        CONVERT_TIMEZONE('UTC', _airbyte_extracted_at) as _airbyte_extracted_at
 
     from source
 

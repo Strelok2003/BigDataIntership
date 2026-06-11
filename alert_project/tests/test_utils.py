@@ -1,4 +1,4 @@
-from src.utils import list_csv_files, load_all_csvs
+from src.utils import list_csv_files, load_all_csvs, send_alert
 
 
 def test_list_csv_files(tmp_path):
@@ -51,3 +51,11 @@ def test_load_all_csvs_empty():
     df = load_all_csvs([])
 
     assert df.empty
+
+
+def test_send_alert():
+    mock_http = type("MockHttp", (), {"request": lambda self, **kwargs: "ok"})()
+
+    result = send_alert("https://example.com", "hello", mock_http)
+
+    assert result == "ok"

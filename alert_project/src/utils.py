@@ -57,7 +57,7 @@ def load_all_csvs(files: list[Path]) -> pd.DataFrame:
     return pd.concat(dataframes, ignore_index=True)
 
 
-def send_alert(url: str, message: str) -> Any:
+def send_alert(url: str, message: str, http_obj: Http) -> Any:
     """
     Send an alert message to a Google Chat webhook.
 
@@ -75,7 +75,6 @@ def send_alert(url: str, message: str) -> Any:
     """
     app_message = {"text": message}
     message_headers = {"Content-Type": "application/json; charset=UTF-8"}
-    http_obj = Http()
 
     response = http_obj.request(
         uri=url,

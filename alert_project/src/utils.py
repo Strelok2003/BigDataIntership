@@ -3,6 +3,7 @@ import pandas as pd
 import logging
 from json import dumps
 from httplib2 import Http
+import shutil
 
 from typing import Any
 
@@ -28,7 +29,7 @@ def list_csv_files(folder: str) -> list[Path]:
     return list(Path(folder).glob("*.csv"))
 
 
-def load_all_csvs(files: list[Path]) -> pd.DataFrame:
+def load_all_csvs(files: list[Path], failed_folder: Path) -> pd.DataFrame:
     """
     Read multiple CSV files and concatenate them into a single DataFrame.
 
@@ -50,6 +51,7 @@ def load_all_csvs(files: list[Path]) -> pd.DataFrame:
             dataframes.append(df)
         except Exception as e:
             logger.error(f"Failed to read {file}: {e}")
+            move_file(file, failed_folder)
 
     if not dataframes:
         return pd.DataFrame()
@@ -57,7 +59,7 @@ def load_all_csvs(files: list[Path]) -> pd.DataFrame:
     return pd.concat(dataframes, ignore_index=True)
 
 
-def send_alert(url: str, message: str, http_obj: Http) -> Any:
+def send_alert(url: str, message: str, http_obj: Http = Http()) -> Any:
     """
     Send an alert message to a Google Chat webhook.
 
@@ -84,3 +86,29 @@ def send_alert(url: str, message: str, http_obj: Http) -> Any:
     )
 
     return response
+
+
+def move_file(source: Path, destination_dir: Path) -> Path | None:
+    """
+    Move a file from source to destination directory.
+
+    Args:
+        source (Path): Path to the source file.
+        destination_dir (Path): Target directory.
+
+    Returns:
+        Path: Final path of moved file.
+    """
+
+    if not source.exists():
+        logger.warning(
+            f"file does not exists to move, either already moved or deleted: {source}"
+        )
+        return None
+
+    destination_dir.mkdir(parents=True, exist_ok=True)
+
+    destination = destination_dir / source.name
+    shutil.move(str(source), str(destination))
+
+    return destination

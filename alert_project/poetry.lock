@@ -118,6 +118,21 @@ files = [
 ]
 
 [[package]]
+name = "httplib2"
+version = "0.31.2"
+description = "A comprehensive HTTP client library."
+optional = false
+python-versions = ">=3.6"
+groups = ["main"]
+files = [
+    {file = "httplib2-0.31.2-py3-none-any.whl", hash = "sha256:dbf0c2fa3862acf3c55c078ea9c0bc4481d7dc5117cae71be9514912cf9f8349"},
+    {file = "httplib2-0.31.2.tar.gz", hash = "sha256:385e0869d7397484f4eab426197a4c020b606edd43372492337c0b4010ae5d24"},
+]
+
+[package.dependencies]
+pyparsing = ">=3.1,<4"
+
+[[package]]
 name = "identify"
 version = "2.6.19"
 description = "File identification library for Python"
@@ -657,6 +672,21 @@ files = [
 windows-terminal = ["colorama (>=0.4.6)"]
 
 [[package]]
+name = "pyparsing"
+version = "3.3.2"
+description = "pyparsing - Classes and methods to define and execute parsing grammars"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "pyparsing-3.3.2-py3-none-any.whl", hash = "sha256:850ba148bd908d7e2411587e247a1e4f0327839c40e2e5e6d05a007ecc69911d"},
+    {file = "pyparsing-3.3.2.tar.gz", hash = "sha256:c777f4d763f140633dcb6d8a3eda953bf7a214dc4eff598413c070bcdc117cbc"},
+]
+
+[package.extras]
+diagrams = ["jinja2", "railroad-diagrams"]
+
+[[package]]
 name = "pytest"
 version = "9.0.3"
 description = "pytest: simple powerful testing with Python"
@@ -868,6 +898,18 @@ files = [
 ]
 
 [[package]]
+name = "types-httplib2"
+version = "0.31.2.20260408"
+description = "Typing stubs for httplib2"
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+files = [
+    {file = "types_httplib2-0.31.2.20260408-py3-none-any.whl", hash = "sha256:a6ef6deea469e71fbde4226c2a79c5ed8f40f201171d9bcd2ba20752dbf3766e"},
+    {file = "types_httplib2-0.31.2.20260408.tar.gz", hash = "sha256:ebf7ba1b5910500762df8bbafcad8f6e5813403442dc0439d86788d81327f1fe"},
+]
+
+[[package]]
 name = "typing-extensions"
 version = "4.15.0"
 description = "Backported and Experimental Type Hints for Python 3.9+"
@@ -913,4 +955,4 @@ python-discovery = ">=1.4"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13"
-content-hash = "0623bc85b01be71aa9e42e385f58ce984063fed9bd121e5af228d2f3e3d07697"
+content-hash = "9d0d56a46d27c9cf84c138e5e6114ee6f9bd0acabc2d9587fa1b3e77364e20a7"

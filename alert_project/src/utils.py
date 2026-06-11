@@ -1,6 +1,10 @@
 from pathlib import Path
 import pandas as pd
 import logging
+from json import dumps
+from httplib2 import Http
+
+from typing import Any
 
 
 logger = logging.getLogger(__name__)
@@ -51,3 +55,33 @@ def load_all_csvs(files: list[Path]) -> pd.DataFrame:
         return pd.DataFrame()
 
     return pd.concat(dataframes, ignore_index=True)
+
+
+def send_alert(url: str, message: str) -> Any:
+    """
+    Send an alert message to a Google Chat webhook.
+
+    This function creates a JSON payload containing the provided message
+    and sends it as an HTTP POST request to the specified Google Chat
+    webhook URL.
+
+    Args:
+        url (str): Google Chat webhook URL that will receive the alert.
+        message (str): Alert message text to send.
+
+    Returns:
+        Any: The response returned by the underlying HTTP client request.
+        Typically contains the HTTP response metadata and content.
+    """
+    app_message = {"text": message}
+    message_headers = {"Content-Type": "application/json; charset=UTF-8"}
+    http_obj = Http()
+
+    response = http_obj.request(
+        uri=url,
+        method="POST",
+        headers=message_headers,
+        body=dumps(app_message),
+    )
+
+    return response

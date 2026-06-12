@@ -11,7 +11,7 @@ from typing import Any
 logger = logging.getLogger(__name__)
 
 
-def list_csv_files(folder: str) -> list[Path]:
+def list_csv_files(folder: Path) -> list[Path]:
     """
     Return a list of all CSV files in the given folder.
 
@@ -70,6 +70,9 @@ def send_alert(url: str, message: str, http_obj: Http = Http()) -> Any:
     Args:
         url (str): Google Chat webhook URL that will receive the alert.
         message (str): Alert message text to send.
+        http_obj (Http, optional): HTTP client instance used to perform
+            the request. Defaults to a new ``Http()`` instance. Can be
+            overridden for testing or custom HTTP client configuration.
 
     Returns:
         Any: The response returned by the underlying HTTP client request.

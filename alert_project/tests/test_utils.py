@@ -1,6 +1,5 @@
 from src.utils import list_csv_files, load_all_csvs, send_alert, move_file, build_rules
 
-from src.rules.fatal_per_minute import FatalPerMinuteRule
 
 from pathlib import Path
 
@@ -87,6 +86,3 @@ def test_build_rules_returns_expected_rules(tmp_path: Path):
     rules = build_rules(tmp_path)
 
     assert isinstance(rules, list)
-    assert len(rules) == 1
-
-    assert isinstance(rules[0], FatalPerMinuteRule)

@@ -6,6 +6,8 @@ from httplib2 import Http
 import shutil
 
 from src.rules.fatal_per_minute import FatalPerMinuteRule
+from src.rules.fatal_per_bundle_id_hour import FatalPerBundleIdHourRule
+
 from src.rules.base import BaseAlertRule
 
 from typing import Any
@@ -123,5 +125,6 @@ def move_file(source: Path, destination_dir: Path) -> Path | None:
 def build_rules(state_folder_path: Path) -> list[BaseAlertRule]:
     return [
         FatalPerMinuteRule(state_folder_path),
+        FatalPerBundleIdHourRule(state_folder_path),
         # more rules here
     ]

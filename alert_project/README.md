@@ -5,6 +5,9 @@ short project description: File should appear in Data/incoming folder and then p
 Docker must be installed for project to run.
 https://docs.docker.com/desktop/setup/install/windows-install/
 
+google chat webhook
+https://developers.google.com/workspace/chat/quickstart/webhooks#python_2
+
 
 ## setup guide:
 

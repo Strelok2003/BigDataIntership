@@ -1,0 +1,16 @@
+services:
+  alert_app:
+    build: .
+    container_name: alert_app
+
+    environment:
+      - GOOGLE_CHAT_WEBHOOK_URL=${GOOGLE_CHAT_WEBHOOK_URL}
+      - DATA_FOLDER_PATH=/app/data
+      - STATE_FOLDER_PATH=/app/state
+
+    volumes:
+      - ./data:/app/data
+      - ./state:/app/state
+      - ./src:/app/src
+
+    restart: unless-stopped

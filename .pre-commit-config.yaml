@@ -1,0 +1,26 @@
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-format
+        name: ruff format
+        entry: ruff format --check
+        language: system
+        files: ^alert_project/.*\.py$
+
+      - id: ruff-check
+        name: ruff check
+        entry: ruff check
+        language: system
+        files: ^alert_project/.*\.py$
+
+      # - id: mypy
+      #   name: mypy
+      #   entry: mypy alert_project
+      #   language: system
+      #   pass_filenames: false
+
+      - id: bandit
+        name: bandit
+        entry: bandit -r alert_project/src
+        language: system
+        pass_filenames: false

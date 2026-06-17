@@ -41,3 +41,6 @@ jobs:
       # -------------------
       - name: Quality
         run: make quality
+
+      - name: docker build
+        run: make docker-build

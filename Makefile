@@ -15,4 +15,7 @@ security:
 test:
 	poetry -C alert_project run python -m pytest
 
+docker-build:
+	docker build alert_project
+
 quality: format lint typecheck security test

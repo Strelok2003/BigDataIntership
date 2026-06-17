@@ -17,9 +17,9 @@ jobs:
   quality:
     runs-on: ubuntu-latest
 
-    # defaults:
-    #   run:
-    #     working-directory: alert_project
+    defaults:
+      run:
+        working-directory: alert_project
 
     steps:
       - name: Checkout
@@ -34,7 +34,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install poetry
-          poetry install --no-interaction --no-root
+          poetry -C alert_project install --no-interaction --no-root
 
       # -------------------
       # make quality check

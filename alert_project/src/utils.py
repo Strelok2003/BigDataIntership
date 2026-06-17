@@ -1,5 +1,4 @@
 from pathlib import Path
-import pandas as pd
 import logging
 from json import dumps
 from httplib2 import Http
@@ -32,36 +31,6 @@ def list_csv_files(folder: Path) -> list[Path]:
         in the directory. If no CSV files are found, returns an empty list.
     """
     return list(Path(folder).glob("*.csv"))
-
-
-def load_all_csvs(files: list[Path], failed_folder: Path) -> pd.DataFrame:
-    """
-    Read multiple CSV files and concatenate them into a single DataFrame.
-
-    Args:
-        files (list[Path]): List of CSV file paths.
-
-    Returns:
-        pd.DataFrame: Combined DataFrame with all rows from all CSVs.
-    """
-    dataframes = []
-
-    for file in files:
-        if not file.exists():
-            logger.warning(f"Skipping missing file: {file}")
-            continue
-
-        try:
-            df = pd.read_csv(file)
-            dataframes.append(df)
-        except Exception as e:
-            logger.error(f"Failed to read {file}: {e}")
-            move_file(file, failed_folder)
-
-    if not dataframes:
-        return pd.DataFrame()
-
-    return pd.concat(dataframes, ignore_index=True)
 
 
 def send_alert(url: str, message: str, http_obj: Http = Http()) -> Any:

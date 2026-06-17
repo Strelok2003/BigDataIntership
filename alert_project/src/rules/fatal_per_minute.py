@@ -47,28 +47,36 @@ class FatalPerMinuteRule(BaseAlertRule):
             Optional[str]: Alert message if threshold is exceeded,
             otherwise None.
         """
-
-        now_minute = pd.Timestamp.now().floor("min")
-
         state = self._load_state()
 
-        last_minute = state.get("minute")
-        previous_count = state.get("count", 0)
+        state_minute = state.get("minute")
+        state_count = state.get("count", 0)
 
-        current_count = df[
-            (df["severity"] == "Error") & (df["date"].dt.floor("min") == now_minute)
-        ].shape[0]
+        grouped = (
+            df[df["severity"] == "Error"]
+            .groupby(
+                df["date"].dt.floor("min"),
+            )
+            .size()
+        )
 
-        if last_minute != str(now_minute):
-            previous_count = 0
+        if grouped.empty:
+            return None
 
-        total = previous_count + current_count
+        grouped_latest_minute = grouped.index.get_level_values(0).max()
 
-        state = {"minute": str(now_minute), "count": total}
+        if state_minute != str(grouped_latest_minute):
+            state_count = 0
+
+        latest_count = grouped.loc[grouped_latest_minute]
+
+        total = state_count + int(latest_count)
+
+        state = {"minute": str(grouped_latest_minute), "count": total}
 
         self._save_state(state)
 
         if total > 10:
-            return f"ALERT: {total} fatal errors in minute {now_minute}"
+            return f"ALERT: {total} fatal errors in minute {grouped_latest_minute}"
 
         return None

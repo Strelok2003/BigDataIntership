@@ -32,27 +32,32 @@ class FatalPerBundleIdHourRule(BaseAlertRule):
             Optional[str]: Alert message if threshold is exceeded,
             otherwise None.
         """
-        now_hour = pd.Timestamp.now().floor("h")
 
         state = self._load_state()
 
-        last_hour = state.get("hour")
+        state_hour = state.get("hour")
         bundles = state.get("bundles", {})
 
-        if last_hour != str(now_hour):
-            bundles = {}
-
-        current_counts = (
-            df[(df["severity"] == "Error") & (df["date"].dt.floor("h") == now_hour)]
-            .groupby("bundle_id")
+        grouped = (
+            df[df["severity"] == "Error"]
+            .groupby([df["date"].dt.floor("h"), "bundle_id"])
             .size()
-            .to_dict()
         )
 
-        for bundle_id, count in current_counts.items():
+        if grouped.empty:
+            return None
+
+        grouped_latest_hour = grouped.index.get_level_values(0).max()
+
+        if state_hour != str(grouped_latest_hour):
+            bundles = {}
+
+        latest = grouped.loc[grouped_latest_hour].to_dict()
+
+        for bundle_id, count in latest.items():
             bundles[bundle_id] = bundles.get(bundle_id, 0) + count
 
-        state = {"hour": str(now_hour), "bundles": bundles}
+        state = {"hour": str(grouped_latest_hour), "bundles": bundles}
 
         self._save_state(state)
 
@@ -60,7 +65,7 @@ class FatalPerBundleIdHourRule(BaseAlertRule):
 
         for bundle_id, total in bundles.items():
             if total > 10:
-                message = f"ALERT: {total} fatal errors in hour {now_hour} for bundle_id={bundle_id}"
+                message = f"ALERT: {total} fatal errors in hour {grouped_latest_hour} for bundle_id={bundle_id}"
                 messages.append(message)
 
         if messages:

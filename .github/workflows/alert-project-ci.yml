@@ -5,11 +5,13 @@ on:
     branches: [main]
     paths:
       - alert_project/**
+      - .github/workflows/ci.yml
 
   push:
     branches: [main]
     paths:
       - alert_project/**
+      - .github/workflows/ci.yml
 
 jobs:
   quality:

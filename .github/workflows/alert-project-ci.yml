@@ -39,30 +39,5 @@ jobs:
       # -------------------
       # Ruff (format check)
       # -------------------
-      - name: Ruff format check
-        run: poetry run ruff format --check .
-
-      # -------------------
-      # Ruff lint
-      # -------------------
-      - name: Ruff check
-        run: poetry run ruff check .
-
-      # -------------------
-      # MyPy
-      # -------------------
-      - name: MyPy
-        run: poetry run mypy .
-
-      # -------------------
-      # Bandit (security)
-      # -------------------
-      - name: Bandit
-        continue-on-error: true
-        run: poetry run bandit -r src
-
-      # -------------------
-      # Pytest
-      # -------------------
-      - name: Pytest
-        run: poetry run python -m pytest
+      - name: Quality
+        run: make quality

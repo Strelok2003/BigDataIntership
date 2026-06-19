@@ -30,13 +30,13 @@ def run_once():
         try:
             rules = build_rules(STATE_FOLDER_PATH)
 
-            for chunk in pd.read_csv(file, chunksize=10000):
+            for i, chunk in enumerate(pd.read_csv(file, chunksize=10000)):
                 chunk.columns = COLUMN_NAMES
 
                 chunk["date"] = pd.to_datetime(chunk["date"], unit="s")
 
                 for rule in rules:
-                    message = rule.process(chunk)
+                    message = rule.process(chunk, str(file), i)
                     if message:
                         send_alert(
                             GOOGLE_CHAT_WEBHOOK_URL,

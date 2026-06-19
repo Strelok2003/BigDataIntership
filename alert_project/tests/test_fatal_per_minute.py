@@ -15,7 +15,11 @@ def test_alert_triggered(tmp_path):
         }
     )
 
-    message = rule.process(df)
+    tmp_file_name = str(tmp_path / "file.csv")
+
+    chunk = 0
+
+    message = rule.process(df, tmp_file_name, chunk)
 
     assert message is not None
 
@@ -32,7 +36,11 @@ def test_alert_not_triggered(tmp_path):
         }
     )
 
-    message = rule.process(df)
+    tmp_file_name = str(tmp_path / "file.csv")
+
+    chunk = 0
+
+    message = rule.process(df, tmp_file_name, chunk)
 
     assert message is None
 
@@ -49,10 +57,16 @@ def test_state_accumulates(tmp_path):
         }
     )
 
-    assert rule.process(df) is None
+    tmp_file_name = str(tmp_path / "file.csv")
+
+    chunk = 0
+
+    assert rule.process(df, tmp_file_name, chunk) is None
+
+    chunk = 1
 
     # Second run in same minute
-    message = rule.process(df)
+    message = rule.process(df, tmp_file_name, chunk)
 
     assert message is not None
 
@@ -69,6 +83,10 @@ def test_non_error_records_ignored(tmp_path):
         }
     )
 
-    message = rule.process(df)
+    tmp_file_name = str(tmp_path / "file.csv")
+
+    chunk = 0
+
+    message = rule.process(df, tmp_file_name, chunk)
 
     assert message is None

@@ -32,7 +32,9 @@ class FatalPerMinuteRule(BaseAlertRule):
         state_file = state_folder_path / "fatal_per_minute.json"
         super().__init__(state_file)
 
-    def process(self, df: pd.DataFrame) -> Optional[str]:
+    def process(
+        self, df: pd.DataFrame, file_name: str, chunk_number: int
+    ) -> Optional[str]:
         """
         Process a batch of log records and evaluate whether an alert
         should be triggered based on error frequency per minute.
@@ -43,6 +45,12 @@ class FatalPerMinuteRule(BaseAlertRule):
                 - 'severity': log severity level (e.g., "Error")
                 - 'date': datetime column (must be pandas datetime dtype)
 
+            file_name (str): Name of the source file being processed. Used for
+                tracking progress and ensuring idempotent processing across retries.
+
+            chunk_number (int): Sequential chunk index within the file. Used together
+                with `file_name` to prevent duplicate processing in chunked pipelines.
+
         Returns:
             Optional[str]: Alert message if threshold is exceeded,
             otherwise None.
@@ -51,6 +59,13 @@ class FatalPerMinuteRule(BaseAlertRule):
 
         state_minute = state.get("minute")
         state_count = state.get("count", 0)
+
+        processed_files, processed = self.check_processed_file(
+            state, file_name, chunk_number
+        )
+
+        if processed:
+            return None
 
         grouped = (
             df[df["severity"] == "Error"]
@@ -72,7 +87,11 @@ class FatalPerMinuteRule(BaseAlertRule):
 
         total = state_count + int(latest_count)
 
-        state = {"minute": str(grouped_latest_minute), "count": total}
+        state = {
+            "minute": str(grouped_latest_minute),
+            "count": total,
+            "processed_files": processed_files,
+        }
 
         self._save_state(state)
 

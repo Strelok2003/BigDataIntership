@@ -16,7 +16,9 @@ class FatalPerBundleIdHourRule(BaseAlertRule):
         state_file = state_folder_path / "fatal_per_bundle_id_hour.json"
         super().__init__(state_file)
 
-    def process(self, df: pd.DataFrame) -> Optional[str]:
+    def process(
+        self, df: pd.DataFrame, file_name: str, chunk_number: int
+    ) -> Optional[str]:
         """
         Process a batch of log records and evaluate whether an alert
         should be triggered based on error frequency per hour and bundle_id.
@@ -28,6 +30,12 @@ class FatalPerBundleIdHourRule(BaseAlertRule):
                 - 'date': datetime column (must be pandas datetime dtype)
                 - 'bundle_id': bundle identification
 
+            file_name (str): Name of the source file being processed. Used for
+                tracking progress and ensuring idempotent processing across retries.
+
+            chunk_number (int): Sequential chunk index within the file. Used together
+                with `file_name` to prevent duplicate processing in chunked pipelines.
+
         Returns:
             Optional[str]: Alert message if threshold is exceeded,
             otherwise None.
@@ -37,6 +45,13 @@ class FatalPerBundleIdHourRule(BaseAlertRule):
 
         state_hour = state.get("hour")
         bundles = state.get("bundles", {})
+
+        processed_files, processed = self.check_processed_file(
+            state, file_name, chunk_number
+        )
+
+        if processed:
+            return None
 
         grouped = (
             df[df["severity"] == "Error"]
@@ -57,7 +72,11 @@ class FatalPerBundleIdHourRule(BaseAlertRule):
         for bundle_id, count in latest.items():
             bundles[bundle_id] = bundles.get(bundle_id, 0) + count
 
-        state = {"hour": str(grouped_latest_hour), "bundles": bundles}
+        state = {
+            "hour": str(grouped_latest_hour),
+            "bundles": bundles,
+            "processed_files": processed_files,
+        }
 
         self._save_state(state)
 

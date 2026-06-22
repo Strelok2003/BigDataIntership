@@ -1,0 +1,93 @@
+from src.rules.base import BaseAlertRule
+from pathlib import Path
+import pandas as pd
+from typing import Optional
+
+
+class FatalPerBundleIdHourRule(BaseAlertRule):
+    def __init__(self, state_folder_path: Path):
+        """
+        Initialize the rule with a path to store state.
+
+        Args:
+            state_folder_path (Path): Directory where the state JSON file
+                will be stored. The file will be named 'fatal_per_bundle_id_hour.json'.
+        """
+        state_file = state_folder_path / "fatal_per_bundle_id_hour.json"
+        super().__init__(state_file)
+
+    def process(
+        self, df: pd.DataFrame, file_name: str, chunk_number: int
+    ) -> Optional[str]:
+        """
+        Process a batch of log records and evaluate whether an alert
+        should be triggered based on error frequency per hour and bundle_id.
+
+        Args:
+            df (pd.DataFrame): DataFrame containing log records.
+                Expected columns:
+                - 'severity': log severity level (e.g., "Error")
+                - 'date': datetime column (must be pandas datetime dtype)
+                - 'bundle_id': bundle identification
+
+            file_name (str): Name of the source file being processed. Used for
+                tracking progress and ensuring idempotent processing across retries.
+
+            chunk_number (int): Sequential chunk index within the file. Used together
+                with `file_name` to prevent duplicate processing in chunked pipelines.
+
+        Returns:
+            Optional[str]: Alert message if threshold is exceeded,
+            otherwise None.
+        """
+
+        state = self._load_state()
+
+        state_hour = state.get("hour")
+        bundles = state.get("bundles", {})
+
+        processed_files, processed = self.check_processed_file(
+            state, file_name, chunk_number
+        )
+
+        if processed:
+            return None
+
+        grouped = (
+            df[df["severity"] == "Error"]
+            .groupby([df["date"].dt.floor("h"), "bundle_id"])
+            .size()
+        )
+
+        if grouped.empty:
+            return None
+
+        grouped_latest_hour = grouped.index.get_level_values(0).max()
+
+        if state_hour != str(grouped_latest_hour):
+            bundles = {}
+
+        latest = grouped.loc[grouped_latest_hour].to_dict()
+
+        for bundle_id, count in latest.items():
+            bundles[bundle_id] = bundles.get(bundle_id, 0) + count
+
+        state = {
+            "hour": str(grouped_latest_hour),
+            "bundles": bundles,
+            "processed_files": processed_files,
+        }
+
+        self._save_state(state)
+
+        messages = []
+
+        for bundle_id, total in bundles.items():
+            if total > 10:
+                message = f"ALERT: {total} fatal errors in hour {grouped_latest_hour} for bundle_id={bundle_id}"
+                messages.append(message)
+
+        if messages:
+            return "\n\n".join(messages)
+
+        return None
